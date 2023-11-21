@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants';
 import NavBar from './NavBar';
+import Button from '@mui/material/Button';
 
 const formatReleaseDate = (date) => {
   if (!date) {
@@ -126,16 +127,16 @@ function ListMovies(props) {
               <p>{movie.overview}</p>
               <p>--------------------------------</p>
               <p>Rating: {movie.vote_average}</p>
-              <button onClick={() => handleAddToWatchlist(movie)}>Add to Watchlist</button>
+              <Button  variant="outlined" color="primary" onClick={() => handleAddToWatchlist(movie)}>Add to Watchlist</Button>
             </div>
           </div>
         ))}
       </div>
       <div>
-        <button onClick={() => { handleBack(); window.scrollTo(0, 0); }} disabled={currentPage === 1}>
+        <Button variant="outlined" color="primary" onClick={() => { handleBack(); window.scrollTo(0, 0); }} disabled={currentPage === 1}>
           Back
-        </button>
-        <button onClick={() => { handleNext(); window.scrollTo(0, 0); }}>Next</button>
+        </Button>
+        <Button variant="outlined" color="primary" onClick={() => { handleNext(); window.scrollTo(0, 0); }}>Next</Button>
       </div>
     </div>
   );
