@@ -67,7 +67,7 @@ const Actors = () => {
           });
     };
     
-    const editActor= (actorId, name, age, portrait, about) => {
+    const editActor = (actorId, name, age, portrait, about) => {
         setMessage('');
         fetch(`${SERVER_URL}/actors/${actorId}`, {
           method: 'PUT',
@@ -134,7 +134,7 @@ const Actors = () => {
                     <div className='buttons'>
                         <EditActor actor={actor} editActor={editActor} />
                         <Button id="Drop" variant="outlined" color="primary" style={{ margin: 10 }} onClick={() => deleteActor(actor.actorId)}>
-                            Delete
+                          Delete
                         </Button>
                     </div>
                   </div>
@@ -145,7 +145,7 @@ const Actors = () => {
         </div>
         <AddActor addActor={addActor} />
       </div>
-  );
+    );
 }
 
 export default Actors;
