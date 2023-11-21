@@ -55,11 +55,9 @@ function Login() {
                         </td><td>
                             <input type="text" name="password" value={user.password} onChange={onChange} />
                         </td></tr>
+                        <Button id="submit" variant="outlined" color="primary" onClick={login}>Login</Button>
                     </tbody>
                 </table>
-            
-                <br/>
-                <button id="submit" onClick={login}>Login</button>
             </div>
         );
     }
