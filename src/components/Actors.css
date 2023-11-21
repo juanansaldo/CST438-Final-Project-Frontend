@@ -15,25 +15,26 @@
 }
 
 .actor-item {
-  flex: 1;
-  margin: 10px; /* Unified margin */
+  width: 30%;
+  margin: 10px;
+  padding: 10px;
   border: 1px solid #ddd;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   box-sizing: border-box;
-  max-width: calc(30% - 10px); /* Unified max-width */
+  max-width: calc(30% - 10px);
 }
 
 .actor-details {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 400px; /* Set a specific width */
-  padding: 10px; /* Unified padding */
+  width: 200 px; 
+  /* padding: 10 px;  */
 }
 
 .actorImg {
-  width: 50%; /* Unified width */
+  width: 50%;
   height: auto;
 }
 
@@ -46,3 +47,4 @@
   display: flex;
   justify-content: center;
 }
+
