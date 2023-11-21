@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { SERVER_URL } from '../constants';
 import NavBar from './NavBar';
+import Button from '@mui/material/Button';
 
 function SavedMovies() {
   const [savedMovies, setSavedMovies] = useState([]);
@@ -45,9 +46,41 @@ function SavedMovies() {
     return releaseDate.toLocaleDateString('en-US', options);
   }
 
+  const removeMovie = (movieTitle) => {
+    setMessage('');
+    
+    const jwtToken = sessionStorage.getItem('jwt');
+    if (!jwtToken) {
+      console.error('User not authenticated');
+      setMessage('User not authenticated.');
+      return;
+    }
+    
+    fetch(`${SERVER_URL}/deleteFromWatch/${encodeURIComponent(movieTitle)}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: jwtToken,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then((res) => {
+      if (res.ok) {
+        setMessage('Movie dropped from watch list.');
+        fetchSavedMovies(); // Refresh the list of saved movies
+      } else {
+        console.error('Error removing movie: ' + res.status);
+        setMessage(`Error removing movie. Status: ${res.status}`);
+      }
+    })
+    .catch((err) => {
+      console.error('Exception while removing movie: ' + err);
+      setMessage(`Exception while removing movie: ${err.message}`);
+    });
+  };  
+
   return (
     <div>
-      <h1>Saved Movies</h1>
+      <h1>Watch List</h1>
       <NavBar />
 
       <div className="movie-container">
@@ -65,6 +98,8 @@ function SavedMovies() {
               <p>--------------Plot--------------</p>
               <p>{movie.movieOverview}</p>
               <p>--------------------------------</p>
+              <Button variant="outlined" onClick={() => removeMovie(movie.movieTitle)}>Remove</Button>
+
             </div>
           </div>
         ))}
