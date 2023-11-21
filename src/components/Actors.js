@@ -120,7 +120,11 @@ const Actors = () => {
       <div>
         <h1>Actors</h1>
         <NavBar />
+            
         {message && <p>{message}</p>}
+        
+        <AddActor addActor={addActor} />
+        
         <div className="actors-container">
           <ul>
             {actors.map((actor, index) => (
@@ -143,7 +147,6 @@ const Actors = () => {
             ))}
           </ul>
         </div>
-        <AddActor addActor={addActor} />
       </div>
     );
 }
