@@ -5,6 +5,7 @@ import Actors from './Actors';
 import SavedMovies from './SavedMovies';
 import { Switch, Route, BrowserRouter as Router } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import { SERVER_URL } from '../constants';
 
 function Login() {
     const[user, setUser] = useState({username:'', password:'', role:''});
@@ -15,7 +16,7 @@ function Login() {
     }
 
     const login = () => {
-        fetch('http://localhost:8081/login', {
+        fetch(`${SERVER_URL}/login`, {
             method:'POST',
             headers: {'Content-Type':'application/json' },
             body: JSON.stringify(user)
