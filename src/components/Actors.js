@@ -42,7 +42,7 @@ const Actors = () => {
           });
     }
 
-    const addActor = (name, age, portrait, about) => {
+    const addActor = (name, dob, portrait, about) => {
         setMessage('');
         fetch(`${SERVER_URL}/actors`, {
           method: 'POST',
@@ -50,7 +50,7 @@ const Actors = () => {
             Authorization: jwtToken,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name: name, age: age, portrait: portrait, about: about }),
+          body: JSON.stringify({ name: name, dob: dob, portrait: portrait, about: about }),
         })
           .then((res) => {
             if (res.ok) {
@@ -67,7 +67,7 @@ const Actors = () => {
           });
     };
     
-    const editActor = (actorId, name, age, portrait, about) => {
+    const editActor = (actorId, name, dob, portrait, about) => {
         setMessage('');
         fetch(`${SERVER_URL}/actors/${actorId}`, {
           method: 'PUT',
@@ -75,7 +75,7 @@ const Actors = () => {
             Authorization: jwtToken,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ name: name, age: age, portrait: portrait, about: about }),
+          body: JSON.stringify({ name: name, dob: dob, portrait: portrait, about: about }),
         })
           .then((res) => {
             if (res.ok) {
@@ -116,6 +116,19 @@ const Actors = () => {
       });
     };
 
+    const calculateAge = (dob) => {
+      const birthDate = new Date(dob);
+      const currentDate = new Date();
+      let age = currentDate.getFullYear() - birthDate.getFullYear();
+      const monthDifference = currentDate.getMonth() - birthDate.getMonth();
+
+      if (monthDifference < 0 || (monthDifference === 0 && currentDate.getDate() < birthDate.getDate())) {
+          age--;
+      }
+
+      return age;
+    }
+
     return (
       <div>
         <h1>Actors</h1>
@@ -132,7 +145,7 @@ const Actors = () => {
                 <div className="actor-details">
                   <div className="actor-info">
                     <h3>{actor.name}</h3>
-                    <p>Age: {actor.age}</p>
+                    <p>Age: {calculateAge(actor.dob)}</p> {/* Updated this line */}
                     <img className='actorImg' src={actor.portrait} alt={actor.name}></img>
                     <p>{actor.about}</p>
                     <div className='buttons'>
