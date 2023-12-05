@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { SERVER_URL } from '../constants';
-import NavBar from './NavBar';
+import { useLocation } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 const formatReleaseDate = (date) => {
@@ -20,7 +20,7 @@ const handleAddToWatchlist = (movie) => {
   if (!jwtToken) {
     console.error('User not authenticated');
     return;
-  }  
+  }
 
   const addToWatchlistData = {
     movieTitle: movie.original_title,
@@ -40,59 +40,64 @@ const handleAddToWatchlist = (movie) => {
     .then((response) => response.json())
     .then((data) => {
       console.log('Movie added to watchlist:', data);
-      // Add any other logic you want to perform after successfully adding the movie
 
-      // For example, you can check if the response contains a specific message
       if (data.message) {
         console.log('Response message:', data.message);
       }
     })
     .catch((error) => {
       console.error('Error adding movie to watchlist:', error);
-      // Handle the error
     });
 };
 
-function ListMovies(props) {
+function SearchedMovies() {
   const [movies, setMovies] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [message, setMessage] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [keyword, setKeyword] = useState('');
+  const location = useLocation();
 
-  useEffect(() => {
-    // Called once after initial render
-    fetchMovies();
-  }, [currentPage]); // Update movies when the page changes
-
-  const fetchMovies = () => {
-
+  const fetchSearchedMovies = useCallback(async () => {
     const jwtToken = sessionStorage.getItem('jwt');
 
     if (!jwtToken) {
-      // Redirect to login page or handle authentication
       console.error('User not authenticated');
       return;
     }
 
-    console.log("fetchMovies");
-    fetch(`${SERVER_URL}/movies?page=${currentPage}`, {
-      headers: {
-        Authorization: jwtToken,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("movies data:", data);
-        setMovies(data);
-        // Scroll to the top of the page after updating movies
-        window.scrollTo(0, 0);
-      })
-      .catch((err) => {
-        console.error(err);
-        setMessage('Error fetching movies.');
-      });
-  }
+    const searchParams = new URLSearchParams(location.search);
+    const newKeyword = searchParams.get('keyword') || '';
 
-  const headers = ['Poster', 'Title', 'Overview', 'Release Date', ' ', ' ', ' '];
+    if (newKeyword !== keyword) {
+      // Reset currentPage when the keyword changes
+      setCurrentPage(1);
+    }
+
+    setKeyword(newKeyword);
+
+    try {
+      const response = await fetch(`${SERVER_URL}/moviesSearched?keyword=${newKeyword}&page=${currentPage}`, {
+        headers: {
+          Authorization: jwtToken,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error fetching searched movies.');
+      }
+
+      const data = await response.json();
+      console.log('searched movies data:', data);
+      setMovies(data);
+    } catch (err) {
+      console.error(err);
+      setMessage('Error fetching searched movies.');
+    }
+  }, [currentPage, keyword, location.search]);
+
+  useEffect(() => {
+    fetchSearchedMovies();
+  }, [fetchSearchedMovies]);
 
   const handleBack = () => {
     if (currentPage > 1) {
@@ -106,8 +111,7 @@ function ListMovies(props) {
 
   return (
     <div>
-      <h1>Movies</h1>
-    
+      <h1>Searched Movies</h1>
 
       <div className="movie-container">
         {movies.map((movie, idx) => (
@@ -115,10 +119,9 @@ function ListMovies(props) {
             <div className="movie-poster">
               <p></p>
               <img
-                src={movie.fullPosterPath} // Adjust the size as needed
+                src={movie.fullPosterPath}
                 alt={`Poster for ${movie.original_title}`}
               />
-              
             </div>
             <div className="movie-details">
               <h4>{movie.original_title}</h4>
@@ -127,11 +130,12 @@ function ListMovies(props) {
               <p>{movie.overview}</p>
               <p>--------------------------------</p>
               <p>Rating: {movie.vote_average}</p>
-              <Button  variant="outlined" color="primary" onClick={() => handleAddToWatchlist(movie)}>Add to Watchlist</Button>
+              <button onClick={() => handleAddToWatchlist(movie)}>Add to Watchlist</button>
             </div>
           </div>
         ))}
       </div>
+
       <div>
         <Button variant="outlined" color="primary" onClick={() => { handleBack(); window.scrollTo(0, 0); }} disabled={currentPage === 1}>
           Back
@@ -142,4 +146,4 @@ function ListMovies(props) {
   );
 }
 
-export default ListMovies;
+export default SearchedMovies;

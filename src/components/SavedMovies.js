@@ -81,7 +81,7 @@ function SavedMovies() {
   return (
     <div>
       <h1>Watch List</h1>
-      <NavBar />
+  
 
       <div className="movie-container">
         {savedMovies.map((movie, idx) => (
