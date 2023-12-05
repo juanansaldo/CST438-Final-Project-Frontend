@@ -132,7 +132,7 @@ const Actors = () => {
     return (
       <div>
         <h1>Actors</h1>
-        <NavBar />
+        
             
         {message && <p>{message}</p>}
         
